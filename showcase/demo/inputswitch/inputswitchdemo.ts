@@ -1,12 +1,7 @@
-import {Component} from 'angular2/core';
-import {InputSwitch} from '../../../components/inputswitch/inputswitch';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
 
 @Component({
-    templateUrl: 'showcase/demo/inputswitch/inputswitch.html',
-    directives: [InputSwitch,TabView,TabPanel,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/inputswitch/inputswitch.html'
 })
 export class InputSwitchDemo {
 

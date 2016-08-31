@@ -1,14 +1,8 @@
-import {Component} from 'angular2/core';
-import {Listbox} from '../../../components/listbox/listbox';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Button} from '../../../components/button/button';
-import {SelectItem} from '../../../components/api/selectitem';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {SelectItem} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/listbox/listboxdemo.html',
-    directives: [Listbox,TabPanel,TabView,Button,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/listbox/listboxdemo.html'
 })
 export class ListboxDemo {
 
@@ -39,7 +33,7 @@ export class ListboxDemo {
         this.cars.push({label: 'Jaguar', value: 'Jaguar'});
         this.cars.push({label: 'Mercedes', value: 'Mercedes'});
         this.cars.push({label: 'Renault', value: 'Renault'});
-        this.cars.push({label: 'Volkswagen', value: 'Volkswagen'});
+        this.cars.push({label: 'VW', value: 'VW'});
         this.cars.push({label: 'Volvo', value: 'Volvo'});
     }
 }

@@ -1,9 +1,10 @@
-import {Component,ElementRef,OnInit,OnDestroy,OnChanges,Input,Output,SimpleChange,EventEmitter} from 'angular2/core';
+import {NgModule,Component,ElementRef,Input,Output,SimpleChange,EventEmitter} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 @Component({
     selector: 'p-paginator',
     template: `
-        <div [attr.class]="styleClass" [attr.style]="style" [ngClass]="{'ui-paginator ui-widget-header ui-unselectable-text':true}">
+        <div [class]="styleClass" [ngStyle]="style" [ngClass]="{'ui-paginator ui-widget-header ui-unselectable-text':true}">
             <span #firstlink class="ui-paginator-first ui-paginator-element ui-state-default ui-corner-all" (mouseenter)="hoveredItem = $event.target" (mouseleave)="hoveredItem = null"
                         (click)="changePageToFirst()" [ngClass]="{'ui-state-disabled':isFirstPage(),'ui-state-hover':(firstlink === hoveredItem && !isFirstPage())}">
                 <span class="fa fa-step-backward"></span>
@@ -13,9 +14,9 @@ import {Component,ElementRef,OnInit,OnDestroy,OnChanges,Input,Output,SimpleChang
                 <span class="fa fa-backward"></span>
             </span>
             <span class="ui-paginator-pages">
-                <span #plink *ngFor="#pageLink of pageLinks" class="ui-paginator-page ui-paginator-element ui-state-default ui-corner-all"
+                <span #plink *ngFor="let pageLink of pageLinks" class="ui-paginator-page ui-paginator-element ui-state-default ui-corner-all"
                     (mouseenter)="hoveredItem = $event.target" (mouseleave)="hoveredItem = null" (click)="changePage(pageLink - 1)"
-                    [ngClass]="{'ui-state-hover':(plink === hoveredItem), 'ui-state-active': (pageLink-1 == page)}">{{pageLink}}</span>
+                    [ngClass]="{'ui-state-hover':(plink === hoveredItem), 'ui-state-active': (pageLink-1 == getPage())}">{{pageLink}}</span>
             </span>
             <span #nextlink class="ui-paginator-next ui-paginator-element ui-state-default ui-corner-all" (mouseenter)="hoveredItem = $event.target" (mouseleave)="hoveredItem = null"
                     (click)="changePageToNext()" [ngClass]="{'ui-state-disabled':isLastPage(),'ui-state-hover':(nextlink === hoveredItem  && !isLastPage())}">
@@ -25,37 +26,56 @@ import {Component,ElementRef,OnInit,OnDestroy,OnChanges,Input,Output,SimpleChang
                     (click)="changePageToLast()" [ngClass]="{'ui-state-disabled':isLastPage(),'ui-state-hover':(lastlink === hoveredItem  && !isLastPage())}">
                 <span class="fa fa-step-forward"></span>
             </span>
+            <select class="ui-paginator-rpp-options ui-widget ui-state-default" *ngIf="rowsPerPageOptions" (change)="onRppChange($event)">
+                <option *ngFor="let opt of rowsPerPageOptions" [value]="opt" [selected]="rows == opt">{{opt}}</option>
+            </select>
         </div>
     `
 })
-export class Paginator implements OnInit{
-
-    @Input() totalRecords: number = 0;
+export class Paginator {
 
     @Input() rows: number = 0;
-
-    @Input() page: number = 0;
 
     @Input() pageLinkSize: number = 5;
 
     @Output() onPageChange: EventEmitter<any> = new EventEmitter();
 
-    @Input() style: string;
+    @Input() style: any;
 
     @Input() styleClass: string;
+    
+    @Input() rowsPerPageOptions: number[];
 
     pageLinks: number[];
 
-    ngOnInit() {
+    _totalRecords: number = 0;
+    
+    _first: number = 0;
+
+    @Input() get totalRecords(): number {
+        return this._totalRecords;
+    }
+
+    set totalRecords(val:number) {
+        this._totalRecords = val;
+        this.updatePageLinks();
+    }
+    
+    @Input() get first(): number {
+        return this._first;
+    }
+
+    set first(val:number) {
+        this._first = val;
         this.updatePageLinks();
     }
 
     isFirstPage() {
-        return this.page === 0;
+        return this.getPage() === 0;
     }
 
     isLastPage() {
-        return this.page === this.getPageCount() - 1;
+        return this.getPage() === this.getPageCount() - 1;
     }
 
     getPageCount() {
@@ -67,7 +87,7 @@ export class Paginator implements OnInit{
         visiblePages = Math.min(this.pageLinkSize, numberOfPages);
 
         //calculate range, keep current in middle if necessary
-        let start = Math.max(0, Math.ceil(this.page - ((visiblePages) / 2))),
+        let start = Math.max(0, Math.ceil(this.getPage() - ((visiblePages) / 2))),
         end = Math.min(numberOfPages - 1, start + visiblePages - 1);
 
         //check when approaching to last page
@@ -92,20 +112,22 @@ export class Paginator implements OnInit{
         var pc = this.getPageCount();
 
         if(p >= 0 && p < pc) {
+            this.first = this.rows * p;
             var state = {
-                first: this.rows * p,
-                rows: this.rows,
                 page: p,
+                first: this.first,
+                rows: this.rows,
                 pageCount: pc
             };
-
-            this.page = p;
-
             this.updatePageLinks();
 
-            this.onPageChange.next(state);
+            this.onPageChange.emit(state);
         }
 
+    }
+    
+    getPage(): number {
+        return Math.floor(this.first / this.rows);
     }
 
     changePageToFirst() {
@@ -113,14 +135,26 @@ export class Paginator implements OnInit{
     }
 
     changePageToPrev() {
-        this.changePage(this.page - 1);
+        this.changePage(this.getPage() - 1);
     }
 
     changePageToNext() {
-        this.changePage(this.page + 1);
+        this.changePage(this.getPage()  + 1);
     }
 
     changePageToLast() {
         this.changePage(this.getPageCount() - 1);
     }
+    
+    onRppChange(event) {
+        this.rows = this.rowsPerPageOptions[event.target.selectedIndex];
+        this.changePageToFirst();
+    }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Paginator],
+    declarations: [Paginator]
+})
+export class PaginatorModule { }

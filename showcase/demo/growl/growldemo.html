@@ -1,7 +1,7 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Growl</span>
-        <span class="defaultText dispTable">Messages is used to display messages in an overlay.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Growl</span>
+        <span class="defaultText">Messages is used to display messages in an overlay.</span>
     </div>
 </div>
 
@@ -9,11 +9,11 @@
     <p-growl [value]="msgs" sticky="sticky"></p-growl>
 
     <div>
-        <button type="button" pButton (click)="showInfo()">Info</button>
-        <button type="button" pButton (click)="showWarn()">Warn</button>
-        <button type="button" pButton (click)="showError()">Error</button>
-        <button type="button" pButton (click)="showMultiple()">Multiple</button>
-        <button type="button" pButton (click)="clear()" icon="fa-close" style="float:right">Clear</button>
+        <button type="button" pButton (click)="showInfo()" label="Info"></button>
+        <button type="button" pButton (click)="showWarn()" label="Warn"></button>
+        <button type="button" pButton (click)="showError()" label="Error"></button>
+        <button type="button" pButton (click)="showMultiple()" label="Multiple"></button>
+        <button type="button" pButton (click)="clear()" icon="fa-close" style="float:right" label="Clear"></button>
     </div>
 </div>
 
@@ -22,44 +22,54 @@
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
-import {Growl} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;GrowlModule&#125; from 'primeng/primeng';
+</code>
 </pre>
 
             <h3>Getting Started</h3>
             <p>A single message is specified by Message interface in PrimeNG that defines the severity, summary and detail properties.
             Messages to display on growl are defined using the value property which should an array of Message instances.</p>
 <pre>
+<code class="language-markup" pCode>
 &lt;p-growl [value]="msgs"&gt;&lt;/p-growl&gt;
+</code>
 </pre>
 
 <pre>
-import {Message} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;Message&#125; from 'primeng/primeng';
 
-export class MyModel {
+export class MyModel &#123;
 
     msgs: Message[] = [];
 
-}
+&#125;
+</code>
 </pre>
 
             <h3>Showing Messages</h3>
             <p>Adding messages to the array is enough to display them via growl. Similary removing a message
             from the array is also removed by growl.</p>
 <pre>
+<code class="language-markup" pCode>
 &lt;p-growl [value]="msgs"&gt;&lt;/p-growl&gt;
     
 &lt;button type="button" (click)="show()"&gt;Show&lt;/button&gt;
 &lt;button type="button" (click)="clear()"&gt;Hide&lt;/button&gt;
+</code>
 </pre>
 
 <pre>
-show() {
-    this.msgs.push({severity:'info', summary:'Info Message', detail:'PrimeNG rocks'});
-}
+<code class="language-typescript" pCode>
+show() &#123;
+    this.msgs.push(&#123;severity:'info', summary:'Info Message', detail:'PrimeNG rocks'&#125;);
+&#125;
 
-hide() {
+hide() &#123;
     this.msgs = [];
-}
+&#125;
+</code>
 </pre>
 
             <h3>Attributes</h3>
@@ -97,7 +107,7 @@ hide() {
             </div>
 
             <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -140,55 +150,59 @@ hide() {
             </div>
 
             <h3>Dependencies</h3>
-            <p>jQuery, jQuery UI WidgetFactory API, PrimeUI Growl.</p>
+            <p>Native component that requires the css of PrimeUI Growl.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
 <pre>
-&lt;p-growl [value]="msgs"&gt;&lt;/p-growl&gt;
+<code class="language-markup" pCode>
+&lt;p-growl [value]="msgs" sticky="sticky"&gt;&lt;/p-growl&gt;
 
 &lt;div&gt;
-    &lt;button type="button" pButton (click)="showInfo()"&gt;Info&lt;/button&gt;
-    &lt;button type="button" pButton (click)="showWarn()"&gt;Warn&lt;/button&gt;
-    &lt;button type="button" pButton (click)="showError()"&gt;Error&lt;/button&gt;
-    &lt;button type="button" pButton (click)="showMultiple()"&gt;Multiple&lt;/button&gt;
-    &lt;button type="button" pButton (click)="clear()" icon="fa-close" style="float:right"&gt;Clear&lt;/button&gt;
+    &lt;button type="button" pButton (click)="showInfo()" label="Info"&gt;&lt;/button&gt;
+    &lt;button type="button" pButton (click)="showWarn()" label="Warn"&gt;&lt;/button&gt;
+    &lt;button type="button" pButton (click)="showError()" label="Error"&gt;&lt;/button&gt;
+    &lt;button type="button" pButton (click)="showMultiple()" label="Multiple"&gt;&lt;/button&gt;
+    &lt;button type="button" pButton (click)="clear()" icon="fa-close" style="float:right" label="Clear"&gt;&lt;/button&gt;
 &lt;/div&gt;
+</code>
 </pre>
 
 <pre>
-import {Message} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;Message&#125; from 'primeng/primeng';
 
-export class GrowlDemo {
+export class GrowlDemo &#123;
 
     msgs: Message[] = [];
 
-    showInfo() {
+    showInfo() &#123;
         this.msgs = [];
-        this.msgs.push({severity:'info', summary:'Info Message', detail:'PrimeNG rocks'});
-    }
+        this.msgs.push(&#123;severity:'info', summary:'Info Message', detail:'PrimeNG rocks'&#125;);
+    &#125;
 
-    showWarn() {
+    showWarn() &#123;
         this.msgs = [];
-        this.msgs.push({severity:'warn', summary:'Warn Message', detail:'There are unsaved changes'});
-    }
+        this.msgs.push(&#123;severity:'warn', summary:'Warn Message', detail:'There are unsaved changes'&#125;);
+    &#125;
 
-    showError() {
+    showError() &#123;
         this.msgs = [];
-        this.msgs.push({severity:'error', summary:'Error Message', detail:'Validation failed'});
-    }
+        this.msgs.push(&#123;severity:'error', summary:'Error Message', detail:'Validation failed'&#125;);
+    &#125;
 
-    showMultiple() {
+    showMultiple() &#123;
         this.msgs = [];
-        this.msgs.push({severity:'info', summary:'Message 1', detail:'PrimeNG rocks'});
-        this.msgs.push({severity:'info', summary:'Message 2', detail:'PrimeUI rocks'});
-        this.msgs.push({severity:'info', summary:'Message 3', detail:'PrimeFaces rocks'});
-    }
+        this.msgs.push(&#123;severity:'info', summary:'Message 1', detail:'PrimeNG rocks'&#125;);
+        this.msgs.push(&#123;severity:'info', summary:'Message 2', detail:'PrimeUI rocks'&#125;);
+        this.msgs.push(&#123;severity:'info', summary:'Message 3', detail:'PrimeFaces rocks'&#125;);
+    &#125;
 
-    clear() {
+    clear() &#123;
         this.msgs = [];
-    }
-}
+    &#125;
+&#125;
+</code>
 </pre>
         </p-tabPanel>
     </p-tabView>

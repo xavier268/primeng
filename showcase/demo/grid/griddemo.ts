@@ -1,22 +1,14 @@
-import {Component} from 'angular2/core';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
+import {Component} from '@angular/core';
 
 @Component ({
     styles:[`
-        .ui-grid {
-            margin-bottom: 10px;
-        }
-
-        .ui-grid .ui-grid-row div {
-            background-color: #cccccc;
+        .ui-g div {
+            background-color: #ededed;
             text-align: center;
-            border: 1px solid #dddddd;
-            padding: 10px 0px;
+            border: 1px solid #fafafa;
         }
     `],
-    templateUrl: 'showcase/demo/grid/griddemo.html',
-    directives: [TabView,TabPanel]
+    templateUrl: 'showcase/demo/grid/griddemo.html'
 })
 export class GridDemo {
 

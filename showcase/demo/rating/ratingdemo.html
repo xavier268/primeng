@@ -1,29 +1,29 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Rating</span>
-        <span class="defaultText dispTable">Rating components is a star based selection input.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Rating</span>
+        <span class="defaultText">Rating components is a star based selection input.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
-    <h3 class="first">Basic {{value1}}</h3> 
-    <p-rating [(value)]="value1"></p-rating>
+    <h3 class="first">Basic {{val1}}</h3> 
+    <p-rating [(ngModel)]="val1"></p-rating>
     <br />
 
-    <h3>Callback {{value2}}</h3>
-    <p-rating [(value)]="value2" (onRate)="handleRate($event)" (onCancel)="handleCancel($event)"></p-rating> <span *ngIf="msg" style="margin-left:10px">{{msg}}</span>
+    <h3>Callback {{val2}}</h3>
+    <p-rating [(ngModel)]="val2" (onRate)="handleRate($event)" (onCancel)="handleCancel($event)"></p-rating> <span *ngIf="msg" style="margin-left:10px">{{msg}}</span>
     <br />
 
-    <h3>No Cancel {{value3}}</h3> 
-    <p-rating [(value)]="value3" [cancel]="false"></p-rating>
+    <h3>No Cancel {{val3}}</h3> 
+    <p-rating [(ngModel)]="val3" [cancel]="false"></p-rating>
     <br />
 
     <h3>ReadOnly</h3> 
-    <p-rating value="5" readonly="true" stars="10" [cancel]="false"></p-rating>
+    <p-rating [ngModel]="5" readonly="true" stars="10" [cancel]="false"></p-rating>
     <br />
 
     <h3>Disabled</h3> 
-    <p-rating [value]="val4" disabled="true" stars="10"></p-rating>
+    <p-rating [ngModel]="val4" disabled="true" stars="10"></p-rating>
     <br />
 </div>
 
@@ -32,31 +32,47 @@
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
-import {Rating} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;RatingModule&#125; from 'primeng/primeng';
+</code>
 </pre>
 
             <h3>Getting Started</h3>
-            <p>Rating is defined using p-rating element and the value property supports two-way binding to manage the model.</p>
+            <p>Two-way value binding is defined using ngModel.</p>
                     
 <pre>
-&lt;p-rating [(value)]="val"&gt;&lt;/p-rating&gt;
+<code class="language-markup" pCode>
+&lt;p-rating [(ngModel)]="val"&gt;&lt;/p-rating&gt;
+</code>
 </pre>
 
 <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
 
     val: number;
 
-}
+&#125;
+</code>
 </pre>
 
-                    <p>As value is two-way binding enabled, defining a default value is enough to render the initial number of selected stars based on it.</p>
+            <p>Defining a default value would be enough to display the initial number of selected stars.</p>
 <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
 
     val: number = 3;
 
-}
+&#125;
+</code>
+</pre>
+
+            <h3>Model Driven Forms</h3>
+            <p>Rating can be used in a model driven form as well.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-rating formControlName="score"&gt;&lt;/p-rating&gt;
+</code>
 </pre>
 
                     <h3>Attributes</h3>
@@ -71,12 +87,6 @@ export class ModelComponent {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>value</td>
-                                    <td>number</td>
-                                    <td>null</td>
-                                    <td>Number of selected stars.</td>
-                                </tr>
                                 <tr>
                                     <td>stars</td>
                                     <td>number</td>
@@ -97,8 +107,8 @@ export class ModelComponent {
                                 </tr>
                                 <tr>
                                     <td>readonly</td>
-                                    <td>Boolean</td>
-                                    <td>true</td>
+                                    <td>boolean</td>
+                                    <td>false</td>
                                     <td>When present, changing the value is not possible.</td>
                                 </tr>
                             </tbody>
@@ -133,7 +143,7 @@ export class ModelComponent {
                     </div>
 
                     <h3>Styling</h3>
-                    <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+                    <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
                     <div class="doc-tablewrapper">
                         <table class="doc-table">
                             <thead>
@@ -164,34 +174,32 @@ export class ModelComponent {
                     </div>
 
                     <h3>Dependencies</h3>
-                    <p>jQuery, jQuery UI WidgetFactory API, PrimeUI Rating.</p>
+                    <p>Native component that requires css of PrimeUI Rating.</p>
                 </p-tabPanel>
 
                 <p-tabPanel header="Source">
 <pre>
-&lt;h3 class="first"&gt;Basic <span>{</span><span>{</span>value1<span>}</span><span>}</span>&lt;/h3&gt; 
-&lt;p-rating [(value)]="value1"&gt;&lt;/p-rating&gt;
-&lt;br /&gt;
+<code class="language-markup" pCode ngNonBindable>
+&lt;h3 class="first"&gt;Basic {{val1}}&lt;/h3&gt; 
+&lt;p-rating [(ngModel)]="val1"&gt;&lt;/p-rating&gt;
 
-&lt;h3&gt;Callback <span>{</span><span>{</span>value2<span>}</span><span>}</span>&lt;/h3&gt;
-&lt;p-rating [(value)]="value2" (onRate)="handleRate($event)" (onCancel)="handleCancel($event)"&gt;&lt;/p-rating&gt; &lt;span *ngIf="msg" style="margin-left:10px"&gt;<span>{</span><span>{</span>msg<span>}</span><span>}</span>&lt;/span&gt;
-&lt;br /&gt;
+&lt;h3&gt;Callback {{val2}}&lt;/h3&gt;
+&lt;p-rating [(ngModel)]="val2" (onRate)="handleRate($event)" (onCancel)="handleCancel($event)"&gt;&lt;/p-rating&gt; &lt;span *ngIf="msg" style="margin-left:10px"&gt;{{msg}}&lt;/span&gt;
 
-&lt;h3&gt;No Cancel <span>{</span><span>{</span>value3<span>}</span><span>}</span>&lt;/h3&gt; 
-&lt;p-rating [(value)]="value3" [cancel]="false"&gt;&lt;/p-rating&gt;
-&lt;br /&gt;
+&lt;h3&gt;No Cancel {{val3}}&lt;/h3&gt; 
+&lt;p-rating [(ngModel)]="val3" [cancel]="false"&gt;&lt;/p-rating&gt;
 
 &lt;h3&gt;ReadOnly&lt;/h3&gt; 
-&lt;p-rating value="5" readonly="true" stars="10" [cancel]="false"&gt;&lt;/p-rating&gt;
-&lt;br /&gt;
+&lt;p-rating [ngModel]="5" readonly="true" stars="10" [cancel]="false"&gt;&lt;/p-rating&gt;
 
 &lt;h3&gt;Disabled&lt;/h3&gt; 
-&lt;p-rating [value]="val4" disabled="true" stars="10"&gt;&lt;/p-rating&gt;
-&lt;br /&gt;
+&lt;p-rating [ngModel]="val4" disabled="true" stars="10"&gt;&lt;/p-rating&gt;
+</code>
 </pre>
 
 <pre>
-export class RatingDemo {
+<code class="language-typescript" pCode>
+export class RatingDemo &#123;
 
     val1: number;
 
@@ -203,14 +211,15 @@ export class RatingDemo {
 
     msg: string;
 
-    handleRate(event) {
+    handleRate(event) &#123;
         this.msg = "You have rated " + event.value;
-    }
+    &#125;
 
-    handleCancel(event) {
+    handleCancel(event) &#123;
         this.msg = "Rating Cancelled";
-    }
-}
+    &#125;
+&#125;
+</code>
 </pre>
                 </p-tabPanel>
             </p-tabView>

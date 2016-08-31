@@ -1,13 +1,7 @@
-import {Component} from 'angular2/core';
-import {Spinner} from '../../../components/spinner/spinner';
-import {Button} from '../../../components/button/button';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
 
 @Component({
-    templateUrl: 'showcase/demo/spinner/spinnerdemo.html',
-    directives: [Spinner,Button,TabView,TabPanel,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/spinner/spinnerdemo.html'
 })
 export class SpinnerDemo {
 
@@ -17,5 +11,5 @@ export class SpinnerDemo {
 
     val3: number;
 
-   val4: number = 100;
+    val4: number = 100;
 }

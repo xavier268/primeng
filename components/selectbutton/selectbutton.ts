@@ -1,78 +1,110 @@
-import {Component, ElementRef, AfterViewInit, OnDestroy, OnChanges, Input, Output, SimpleChange, EventEmitter} from 'angular2/core';
-import {SelectItem} from '../api/selectitem';
+import {NgModule,Component,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SelectItem} from '../common/api';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
+
+const SELECTBUTTON_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
+    useExisting: forwardRef(() => SelectButton),
+    multi: true
+});
 
 @Component({
     selector: 'p-selectButton',
     template: `
-        <div class="ui-selectbutton ui-buttonset ui-widget ui-corner-all">
-            <div *ngFor="#option of options;" class="ui-button ui-widget ui-state-default ui-button-text-only" [attr.data-value]="option.value">
+        <div [ngClass]="'ui-selectbutton ui-buttonset ui-widget ui-corner-all ui-buttonset-' + options.length" (mouseleave)="hoveredItem=null" [ngStyle]="style" [class]="styleClass">
+            <div *ngFor="let option of options;" class="ui-button ui-widget ui-state-default ui-button-text-only"
+                [ngClass]="{'ui-state-hover': (hoveredItem==option)&&!disabled,'ui-state-active':isSelected(option), 'ui-state-disabled':disabled}"
+                (mouseenter)="hoveredItem=option" (click)="onItemClick($event,option)">
                 <span class="ui-button-text ui-c">{{option.label}}</span>
             </div>
         </div>
-    `
+    `,
+    providers: [SELECTBUTTON_VALUE_ACCESSOR]
 })
-export class SelectButton {
-
-    initialized: boolean;
+export class SelectButton implements ControlValueAccessor {
 
     @Input() options: SelectItem[];
 
     @Input() tabindex: number;
 
     @Input() multiple: boolean;
+    
+    @Input() style: any;
+        
+    @Input() styleClass: string;
 
-    @Input() value: any;
-
-    @Output() valueChange: EventEmitter<any> = new EventEmitter();
+    @Input() disabled: boolean;
 
     @Output() onChange: EventEmitter<any> = new EventEmitter();
+    
+    value: any;
+    
+    onModelChange: Function = () => {};
+    
+    onModelTouched: Function = () => {};
 
-    stopNgOnChangesPropagation: boolean;
-
-    constructor(private el: ElementRef) {
-        this.initialized = false;
+    protected hoveredItem: any;
+    
+    writeValue(value: any) : void {
+        this.value = value;
+    }
+    
+    registerOnChange(fn: Function): void {
+        this.onModelChange = fn;
     }
 
-    ngAfterViewInit() {
-        jQuery(this.el.nativeElement.children[0]).puiselectbutton({
-            value: this.value,
-            tabindex : this.tabindex,
-            multiple: this.multiple,
-            enhanced: true,
-            change: (event: Event, ui: PrimeUI.SelectButtonEventParams) => {
-                this.stopNgOnChangesPropagation = true;
-                this.onChange.next({ originalEvent: event, value: ui.value });
-                if (this.multiple) {
-                    var values: any = [];
-                    for (var i = 0; i < ui.index.length; i++) {
-                        values.push(this.options[ui.index[i]].value);
-                    }
-                    this.valueChange.next(values);
-                }
-                else {
-                    this.valueChange.next(this.options[ui.index].value);
-                }
-            }
+    registerOnTouched(fn: Function): void {
+        this.onModelTouched = fn;
+    }
+    
+    onItemClick(event, option: SelectItem) {
+        if(this.disabled) {
+            return;
+        }
+        
+        if(this.multiple) {
+            let itemIndex = this.findItemIndex(option);
+            if(itemIndex != -1)
+                this.value.splice(itemIndex, 1);
+            else
+                this.value.push(option.value);
+        }
+        else {
+            this.value = option.value;
+        }
+        
+        this.onModelChange(this.value);
+        
+        this.onChange.emit({
+            originalEvent: event,
+            value: this.value
         });
-        this.initialized = true;
     }
-
-    ngOnChanges(changes: { [key: string]: SimpleChange }) {
-        if (this.initialized) {
-            for (var key in changes) {
-                if (key == 'value' && this.stopNgOnChangesPropagation) {
-                    this.stopNgOnChangesPropagation = false;
-                    continue;
+    
+    isSelected(option: SelectItem) {
+        if(this.multiple)
+            return this.findItemIndex(option) != -1;
+        else
+            return option.value == this.value;
+    }
+    
+    findItemIndex(option: SelectItem) {
+        let index = -1;
+        if(this.value) {
+            for(let i = 0; i < this.value.length; i++) {
+                if(this.value[i] == option.value) {
+                    index = i;
+                    break;
                 }
-
-                jQuery(this.el.nativeElement.children[0]).puiselectbutton('option', key, changes[key].currentValue);
             }
         }
+        return index;
     }
-
-    ngOnDestroy() {
-        jQuery(this.el.nativeElement.children[0]).puiselectbutton('destroy');
-        this.initialized = false;
-    }
-
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [SelectButton],
+    declarations: [SelectButton]
+})
+export class SelectButtonModule { }

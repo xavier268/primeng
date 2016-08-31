@@ -1,15 +1,9 @@
-import {Component} from 'angular2/core';
-import {Growl} from '../../../components/growl/growl';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Button} from '../../../components/button/button';
-import {SelectItem} from '../../../components/api/selectitem';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
-import {Message} from '../../../components/api/message';
+import {Component} from '@angular/core';
+import {SelectItem} from '../../../components/common/api';
+import {Message} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/growl/growldemo.html',
-    directives: [Growl,TabPanel,TabView,Button,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/growl/growldemo.html'
 })
 export class GrowlDemo {
 

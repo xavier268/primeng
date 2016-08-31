@@ -1,5 +1,6 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange,EventEmitter} from 'angular2/core';
-import {Message} from '../api/message';
+import {NgModule,Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Message} from '../common/api';
 
 @Component({
     selector: 'p-messages',
@@ -11,7 +12,7 @@ import {Message} from '../api/message';
             </a>
             <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
             <ul>
-                <li *ngFor="#msg of value">
+                <li *ngFor="let msg of value">
                     <span class="ui-messages-summary">{{msg.summary}}</span>
                     <span class="ui-messages-detail">{{msg.detail}}</span>
                 </li>
@@ -22,8 +23,6 @@ import {Message} from '../api/message';
 export class Messages {
 
     @Input() value: Message[];
-
-    @Output() valueChange: EventEmitter<any> = new EventEmitter();
 
     @Input() closable: boolean = true;
 
@@ -36,8 +35,15 @@ export class Messages {
     }
 
     clear(event) {
-        this.valueChange.next([]);
+        this.value.splice(0, this.value.length);
 
         event.preventDefault();
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Messages],
+    declarations: [Messages]
+})
+export class MessagesModule { }

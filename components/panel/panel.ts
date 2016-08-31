@@ -1,85 +1,93 @@
-import {Component, ElementRef, AfterViewInit, OnDestroy, OnChanges, Input, SimpleChange, Output, EventEmitter} from 'angular2/core';
+import {NgModule,Component,Input,Output,EventEmitter,trigger,state,transition,style,animate} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 @Component({
     selector: 'p-panel',
     template: `
-        <div class="ui-panel ui-widget ui-widget-content ui-corner-all">
+        <div [ngClass]="'ui-panel ui-widget ui-widget-content ui-corner-all'" [ngStyle]="style" [class]="styleClass">
             <div class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
-                <span class="ui-panel-title">{{header}}</span>
-                <a *ngIf="closable" class="ui-panel-titlebar-icon ui-panel-titlebar-closer ui-corner-all ui-state-default" href="#"><span class="fa fa-fw fa-close"></span></a>
-                <a *ngIf="toggleable" class="ui-panel-titlebar-icon ui-panel-titlebar-toggler ui-corner-all ui-state-default" href="#"><span class="fa fa-fw"></span></a>
+                <span class="ui-panel-title" *ngIf="header">{{header}}</span>
+                <ng-content select="header"></ng-content>
+                <a *ngIf="toggleable" class="ui-panel-titlebar-icon ui-panel-titlebar-toggler ui-corner-all ui-state-default" href="#"
+                    [ngClass]="{'ui-state-hover':hoverToggler}" (mouseenter)="hoverToggler=true" (mouseleave)="hoverToggler=false" (click)="toggle($event)">
+                    <span class="fa fa-fw" [ngClass]="{'fa-minus': !collapsed,'fa-plus':collapsed}"></span>
+                </a>
             </div>
-            <div class="ui-panel-content ui-widget-content">
-                <ng-content></ng-content>
+            <div class="ui-panel-content-wrapper" [@panelContent]="collapsed ? 'hidden' : 'visible'" 
+                [ngClass]="{'ui-panel-content-wrapper-overflown': collapsed||animating}">
+                <div class="ui-panel-content ui-widget-content">
+                    <ng-content></ng-content>
+                </div>
             </div>
         </div>
-    `
+    `,
+    animations: [
+        trigger('panelContent', [
+            state('hidden', style({
+                height: '0px'
+            })),
+            state('visible', style({
+                height: '*'
+            })),
+            transition('visible => hidden', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+            transition('hidden => visible', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+        ])
+    ]
 })
-export class Panel implements AfterViewInit, OnDestroy, OnChanges {
+export class Panel {
 
     @Input() toggleable: boolean;
 
-    @Input() toggleDuration: any;
-
-    @Input() toggleOrientation: any;
-
     @Input() header: string;
 
-    @Input() closable: boolean;
+    @Input() collapsed: boolean = false;
+    
+    @Input() style: any;
+        
+    @Input() styleClass: string;
 
-    @Input() closeDuration: any;
+    @Output() onBeforeToggle: EventEmitter<any> = new EventEmitter();
 
-    @Input() collapsed: boolean;
-
-    @Output() onBeforeCollapse: EventEmitter<any> = new EventEmitter();
-
-    @Output() onAfterCollapse: EventEmitter<any> = new EventEmitter();
-
-    @Output() onBeforeExpand: EventEmitter<any> = new EventEmitter();
-
-    @Output() onAfterExpand: EventEmitter<any> = new EventEmitter();
-
-    @Output() onBeforeClose: EventEmitter<any> = new EventEmitter();
-
-    @Output() onAfterClose: EventEmitter<any> = new EventEmitter();
-
-    initialized: boolean;
-
-    constructor(private el: ElementRef) {
-        this.initialized = false;
+    @Output() onAfterToggle: EventEmitter<any> = new EventEmitter();
+    
+    protected hoverToggler: boolean;
+    
+    protected animating: boolean;
+    
+    toggle(event) {
+        this.animating = true;
+        this.onBeforeToggle.emit({originalEvent: event, collapsed: this.collapsed});
+        
+        if(this.toggleable) {            
+            if(this.collapsed)
+                this.expand(event);
+            else
+                this.collapse(event);
+        }
+        
+        this.onAfterToggle.emit({originalEvent: event, collapsed: this.collapsed});   
+        
+        //TODO: Use onDone of animate callback instead with RC6
+        setTimeout(() => {
+            this.animating = false;
+        }, 400);
+        
+        event.preventDefault();
     }
     
-    ngAfterViewInit() {
-        jQuery(this.el.nativeElement.children[0]).puipanel({
-            title: this.header,
-            toggleable: this.toggleable,
-            toggleDuration: this.toggleDuration,
-            toggleOrientation: this.toggleOrientation,
-            collapsed: this.collapsed,
-            closable: this.closable,
-            closeDuration: this.closeDuration,
-            beforeCollapse: this.onBeforeCollapse ? (event: Event) => { this.onBeforeCollapse.next(event); } : null,
-            afterCollapse: this.onAfterCollapse ? (event: Event) => { this.onAfterCollapse.next(event); } : null,
-            beforeExpand: this.onBeforeExpand ? (event: Event) => { this.onBeforeExpand.next(event); } : null,
-            afterExpand: this.onAfterExpand ? (event: Event) => { this.onAfterExpand.next(event); } : null,
-            beforeClose: this.onBeforeClose ? (event: Event) => { this.onBeforeClose.next(event); } : null,
-            afterClose: this.onAfterClose ? (event: Event) => { this.onAfterClose.next(event); } : null,
-            enhanced: true
-        });
-        this.initialized = true;
+    expand(event) {
+        this.collapsed = false;
     }
-
-    ngOnChanges(changes: { [key: string]: SimpleChange}) {
-        if (this.initialized) {
-            for (var key in changes) {
-                jQuery(this.el.nativeElement.children[0]).puipanel('option', key, changes[key].currentValue);
-            }
-        }   
-    }
-
-    ngOnDestroy() {
-        jQuery(this.el.nativeElement.children[0]).puipanel('destroy');
-        this.initialized = false;
+    
+    collapse(event) {
+        this.collapsed = true;
     }
 
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Panel],
+    declarations: [Panel]
+})
+export class PanelModule { }

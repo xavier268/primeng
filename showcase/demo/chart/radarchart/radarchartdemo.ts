@@ -1,57 +1,38 @@
-import {Component} from 'angular2/core';
-import {RadarChart} from '../../../../components/chart/radarchart/radarchart';
-import {TabView} from '../../../../components/tabview/tabview';
-import {TabPanel} from '../../../../components/tabview/tabpanel';
-import {Growl} from '../../../../components/growl/growl';
-import {Button} from '../../../../components/button/button';
-import {Message} from '../../../../components/api/message';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {Message} from '../../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/chart/radarchart/radarchartdemo.html',
-    directives: [RadarChart,Button,Growl,TabPanel,TabView,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/chart/radarchart/radarchartdemo.html'
 })
 export class RadarChartDemo {
 
     data: any;
 
-    msgs: Message[];
-
     constructor() {
         this.data = {
-            labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+            labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
             datasets: [
                 {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    label: 'My First dataset',
+                    backgroundColor: 'rgba(179,181,198,0.2)',
+                    borderColor: 'rgba(179,181,198,1)',
+                    pointBackgroundColor: 'rgba(179,181,198,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(179,181,198,1)',
                     data: [65, 59, 90, 81, 56, 55, 40]
                 },
                 {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    label: 'My Second dataset',
+                    backgroundColor: 'rgba(255,99,132,0.2)',
+                    borderColor: 'rgba(255,99,132,1)',
+                    pointBackgroundColor: 'rgba(255,99,132,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(255,99,132,1)',
                     data: [28, 48, 40, 19, 96, 27, 100]
                 }
             ]
-        }
-    }
-
-    onSelect(event) {
-        if(event.points) {
-            this.msgs = [];
-            for(var i = 0; i < event.points.length; i++) {
-                this.msgs.push({severity: 'info', summary: 'Point Selected', 'detail': event.points[i].label + ' ' + event.points[i].value});
-            }
-
-        }
+        };
     }
 }

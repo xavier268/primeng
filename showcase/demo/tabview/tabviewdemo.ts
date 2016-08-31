@@ -1,13 +1,15 @@
-import {Component} from 'angular2/core';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {Message} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/tabview/tabviewdemo.html',
-    directives: [TabView,TabPanel,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/tabview/tabviewdemo.html'
 })
 export class TabViewDemo {
 
-    activeTabIndex: number = 1;
+    msgs: Message[];
+    
+    onTabChange(event) {
+        this.msgs = [];
+        this.msgs.push({severity:'info', summary:'Tab Expanded', detail: 'Index: ' + event.index});
+    }
 }

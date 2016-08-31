@@ -1,7 +1,7 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">ProgressBar</span>
-        <span class="defaultText dispTable">ProgressBar is a process status indicator.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">ProgressBar</span>
+        <span class="defaultText">ProgressBar is a process status indicator.</span>
     </div>
 </div>
 
@@ -20,21 +20,27 @@
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
-import {ProgressBar} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;ProgressBarModule&#125; from 'primeng/primeng';
+</code>
 </pre>
 
             <h3>Getting Started</h3>
             <p>ProgressBar requires a value between 0 and 100 to display the progress.</p>
 <pre>
+<code class="language-markup" pCode>
 &lt;p-progressBar [value]="value"&gt;&lt;/p-progressBar&gt;
+</code>
 </pre>
 
 <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
 
     value: number = 0;
 
-}
+&#125;
+</code>
 </pre>
 
             <h3>Attributes</h3>
@@ -60,7 +66,7 @@ export class ModelComponent {
             </div>
 
             <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -87,11 +93,12 @@ export class ModelComponent {
             </div>
 
             <h3>Dependencies</h3>
-            <p>PrimeUI progressbar widget css.</p>
+            <p>Native component that requires css of PrimeUI ProgressBar.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
 <pre>
+<code class="language-markup" pCode>
 &lt;p-growl [(value)]="msgs"&gt;&lt;/p-growl&gt;
 
 &lt;h3 class="first"&gt;Dynamic&lt;/h3&gt;
@@ -99,27 +106,30 @@ export class ModelComponent {
 
 &lt;h3&gt;Static&lt;/h3&gt;
 &lt;p-progressBar [value]="50"&gt;&lt;/p-progressBar&gt;
+</code>
 </pre>
 
 <pre>
-export class ProgressBarDemo {
+<code class="language-typescript" pCode>
+export class ProgressBarDemo &#123;
 
     value: number = 0;
 
     msgs: Message[];
 
-    ngOnInit() {
-        let interval = setInterval(() => {
+    ngOnInit() &#123;
+        let interval = setInterval(() => &#123;
             this.value = this.value + Math.floor(Math.random() * 10) + 1;
-            if(this.value >= 100) {
+            if(this.value >= 100) &#123;
                 this.value = 100;
-                this.msgs = [{severity: 'info', summary: 'Success', detail: 'Process Completed'}];
+                this.msgs = [&#123;severity: 'info', summary: 'Success', detail: 'Process Completed'&#125;];
                 clearInterval(interval);
-            }
-        }, 2000);
-    }
+            &#125;
+        &#125;, 2000);
+    &#125;
 
-}
+&#125;
+</code>
 </pre>
         </p-tabPanel>
     </p-tabView>

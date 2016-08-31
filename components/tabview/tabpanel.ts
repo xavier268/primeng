@@ -1,10 +1,10 @@
-import {Component,Input} from 'angular2/core';
+import {Component,Input} from '@angular/core';
 import {TabView} from './tabview';
 
 @Component({
     selector: 'p-tabPanel',
     template: `
-        <div>
+        <div class="ui-tabview-panel ui-widget-content" [style.display]="selected ? 'block' : 'none'" *ngIf="!closed">
             <ng-content></ng-content>
         </div>
     `,
@@ -13,11 +13,21 @@ export class TabPanel {
 
     @Input() header: string;
 
+    @Input() selected: boolean;
+    
+    @Input() disabled: boolean;
+    
     @Input() closable: boolean;
-
-    initialized: boolean;
-
-    constructor(tabview: TabView) {
-        tabview.addTab(this);
-    }
+    
+    @Input() headerStyle: any;
+    
+    @Input() headerStyleClass: string;
+    
+    @Input() leftIcon: string;
+    
+    @Input() rightIcon: string;
+    
+    public hoverHeader: boolean;
+    
+    public closed: boolean;
 }

@@ -1,85 +1,154 @@
-import {Component, ElementRef, OnInit, OnDestroy, OnChanges, AfterViewInit, Input, Output, SimpleChange, EventEmitter} from 'angular2/core';
-import {TabPanel} from './tabpanel';
+import {NgModule,Component,ElementRef,Input,Output,EventEmitter,Query,QueryList} from '@angular/core';
+import {CommonModule} from '@angular/common';
+
+@Component({
+    selector: 'p-tabPanel',
+    template: `
+        <div class="ui-tabview-panel ui-widget-content" [style.display]="selected ? 'block' : 'none'" *ngIf="!closed">
+            <ng-content></ng-content>
+        </div>
+    `,
+})
+export class TabPanel {
+
+    @Input() header: string;
+
+    @Input() selected: boolean;
+    
+    @Input() disabled: boolean;
+    
+    @Input() closable: boolean;
+    
+    @Input() headerStyle: any;
+    
+    @Input() headerStyleClass: string;
+    
+    @Input() leftIcon: string;
+    
+    @Input() rightIcon: string;
+    
+    public hoverHeader: boolean;
+    
+    public closed: boolean;
+}
 
 @Component({
     selector: 'p-tabView',
     template: `
-        <div>
-            <ul>
-                <li *ngFor="#tab of tabPanels">
-                    <a href="#">{{tab.header}}</a><span *ngIf="tab.closable"class="fa fa-close"></span>
-                </li>
+        <div [ngClass]="'ui-tabview ui-widget ui-widget-content ui-corner-all ui-tabview-' + orientation" [ngStyle]="style" [class]="styleClass">
+            <ul class="ui-tabview-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                <template ngFor let-tab [ngForOf]="tabs">
+                    <li [class]="getDefaultHeaderClass(tab)" [ngStyle]="tab.headerStyle"
+                        [ngClass]="{'ui-tabview-selected ui-state-active': tab.selected, 'ui-state-hover': tab.hoverHeader&&!tab.disabled, 'ui-state-disabled': tab.disabled}"
+                        (mouseenter)="tab.hoverHeader=true" (mouseleave)="tab.hoverHeader=false" (click)="open($event,tab)" *ngIf="!tab.closed">
+                        <a href="#">
+                            <span class="ui-tabview-left-icon fa" [ngClass]="tab.leftIcon" *ngIf="tab.leftIcon"></span>
+                            {{tab.header}}
+                            <span class="ui-tabview-right-icon fa" [ngClass]="tab.rightIcon" *ngIf="tab.rightIcon"></span>
+                        </a>
+                        <span *ngIf="tab.closable" class="ui-tabview-close fa fa-close" (click)="close($event,tab)"></span>
+                    </li>
+                </template>
             </ul>
-            <div>
+            <div class="ui-tabview-panels">
                 <ng-content></ng-content>
             </div>
         </div>
     `,
 })
-export class TabView implements OnDestroy, OnChanges, AfterViewInit {
+export class TabView {
 
-    @Input() activeIndex: number = 0;
-
-    @Input() orientation: string;
-
-    @Input() effect: string;
-
-    @Input() effectDuration: any = 'fast';
+    @Input() orientation: string = 'top';
+    
+    @Input() style: any;
+    
+    @Input() styleClass: string;
 
     @Output() onChange: EventEmitter<any> = new EventEmitter();
 
     @Output() onClose: EventEmitter<any> = new EventEmitter();
 
-    @Output() activeIndexChange: EventEmitter<any> = new EventEmitter();
-
     initialized: boolean;
+    
+    tabs: TabPanel[];
 
-    tabPanels: TabPanel[];
-
-    stopNgOnChangesPropagation: boolean;
-
-    constructor(private el: ElementRef) {
-        this.tabPanels = [];
-        this.initialized = false;
-    }
-
-    addTab(tab: TabPanel) {
-        this.tabPanels.push(tab);
-    }
-
-    ngAfterViewInit() {
-        jQuery(this.el.nativeElement.children[0]).puitabview({
-            activeIndex: this.activeIndex,
-            orientation: this.orientation,
-            effect: this.effect ? {name: this.effect, duration: this.effectDuration} : null,
-            change: (event: Event, ui: any) => {
-                this.stopNgOnChangesPropagation = true;
-                this.activeIndexChange.next(ui.index);
-
-                if (this.onChange) {
-                    this.onChange.next({originalEvent: event, index: ui.index});
-                }
-            },
-            close: this.onClose ? (event: Event, ui: any) => { this.onClose.next({originalEvent: event, index: ui.index})}: null
+    constructor(protected el: ElementRef,@Query(TabPanel) tabPanels: QueryList<TabPanel>) {
+        tabPanels.changes.subscribe(_ => {
+            this.tabs = tabPanels.toArray();
+            let selectedTab: TabPanel = this.findSelectedTab();
+            if(!selectedTab && this.tabs.length) {
+                this.tabs[0].selected = true;
+            }
         });
-        this.initialized = true;
     }
-
-    ngOnChanges(changes: { [key: string]: SimpleChange }) {
-        if (this.initialized) {
-            for (var key in changes) {
-                if (key == 'activeIndex' && this.stopNgOnChangesPropagation) {
-                    this.stopNgOnChangesPropagation = false;
-                    continue;
+            
+    open(event, tab: TabPanel) {
+        if(tab.disabled) {
+            event.preventDefault();
+            return;
+        }
+        
+        if(!tab.selected) {
+            let selectedTab: TabPanel = this.findSelectedTab();
+            if(selectedTab) {
+                selectedTab.selected = false
+            }
+            tab.selected = true;
+            this.onChange.emit({originalEvent: event, index: this.findTabIndex(tab)});
+        }
+        event.preventDefault();
+    }
+    
+    close(event, tab: TabPanel) {        
+        if(tab.selected) {
+            tab.selected = false;
+            for(let i = 0; i < this.tabs.length; i++) {
+                let tabPanel = this.tabs[i];
+                if(!tabPanel.closed&&!tab.disabled) {
+                    tabPanel.selected = true;
+                    break;
                 }
-
-                jQuery(this.el.nativeElement.children[0]).puitabview('option', key, changes[key].currentValue);
             }
         }
+        
+        tab.closed = true;
+        this.onClose.emit({originalEvent: event, index: this.findTabIndex(tab)});
+        event.stopPropagation();
     }
-
-    ngOnDestroy() {
-        jQuery(this.el.nativeElement.children[0]).puitabview('destroy');
-        this.initialized = false;
+    
+    findSelectedTab() {
+        for(let i = 0; i < this.tabs.length; i++) {
+            if(this.tabs[i].selected) {
+                return this.tabs[i];
+            }
+        }
+        return null;
+    }
+    
+    findTabIndex(tab: TabPanel) {
+        let index = -1;
+        for(let i = 0; i < this.tabs.length; i++) {
+            if(this.tabs[i] == tab) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+    
+    getDefaultHeaderClass(tab:TabPanel) {
+        let styleClass = 'ui-state-default ui-corner-' + this.orientation; 
+        if(tab.headerStyleClass) {
+            styleClass = styleClass + " " + tab.headerStyleClass;
+        }
+        return styleClass;
     }
 }
+
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [TabView,TabPanel],
+    declarations: [TabView,TabPanel]
+})
+export class TabViewModule { }

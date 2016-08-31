@@ -1,70 +1,92 @@
-import {Component, ElementRef, OnInit, OnDestroy, OnChanges, SimpleChange, Input, Output, EventEmitter} from 'angular2/core';
+import {NgModule,Component,ElementRef,OnInit,Input,Output,EventEmitter,forwardRef,Provider} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
+
+const RATING_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
+    useExisting: forwardRef(() => Rating),
+    multi: true
+});
 
 @Component({
     selector: 'p-rating',
-    template: '<input type="hidden" />'
+    template: `
+        <div class="ui-rating" [ngClass]="{'ui-state-disabled': disabled}">
+            <div class="ui-rating-cancel" *ngIf="cancel" (click)="clear($event)" [ngClass]="{'ui-rating-cancel-hover':hoverCancel}"
+             (mouseenter)="hoverCancel=true" (mouseleave)="hoverCancel=false"><a></a></div>
+            <div class="ui-rating-star" *ngFor="let star of starsArray;let i=index" (click)="rate($event,i)"
+             [ngClass]="{'ui-rating-star-on':(i < value)}"><a></a></div>
+        </div>
+    `,
+    providers: [RATING_VALUE_ACCESSOR]
 })
-export class Rating implements OnInit, OnDestroy, OnChanges {
-
-    @Input() value: number;
+export class Rating implements ControlValueAccessor {
 
     @Input() disabled: boolean;
 
     @Input() readonly: boolean;
 
-    @Input() stars: number;
+    @Input() stars: number = 5;
 
     @Input() cancel: boolean = true;
-
-    @Output() valueChange: EventEmitter<any> = new EventEmitter();
 
     @Output() onRate: EventEmitter<any> = new EventEmitter();
 
     @Output() onCancel: EventEmitter<any> = new EventEmitter();
-
-    initialized: boolean;
-
-    stopNgOnChangesPropagation: boolean;
-
-    constructor(private el: ElementRef) {
-        this.initialized = false;
-    }
+    
+    value: number;
+    
+    onModelChange: Function = () => {};
+    
+    onModelTouched: Function = () => {};
+    
+    protected starsArray: number[];
+    
+    protected hoverCancel: boolean;
 
     ngOnInit() {
-        jQuery(this.el.nativeElement.children[0]).puirating({
-            value: this.value,
-            stars: this.stars,
-            cancel: this.cancel,
-            disabled: this.disabled,
-            readonly: this.readonly,
-            rate: (event: Event, value: number) => {
-                this.stopNgOnChangesPropagation = true;
-                this.valueChange.next(value); 
-
-                if (this.onRate) {
-                    this.onRate.next({ originalEvent: event, value: value });
-                }
-            },
-            oncancel: this.onCancel ? (event: Event) => { this.onCancel.next(event); } : null
-        });
-        this.initialized = true;
-    }
-
-    ngOnChanges(changes: {[key: string]: SimpleChange}) {
-        if (this.initialized) {
-            for (var key in changes) {
-                if (key == 'value' && this.stopNgOnChangesPropagation) {
-                    this.stopNgOnChangesPropagation = false;
-                    continue;
-                }
-
-                jQuery(this.el.nativeElement.children[0].children[0]).puirating('option', key, changes[key].currentValue);
-            }
+        this.starsArray = [];
+        for(let i = 0; i < this.stars; i++) {
+            this.starsArray[i] = i;
         }
     }
+    
+    rate(event, i: number): void {
+        if(!this.readonly&&!this.disabled) {
+            this.value = (i + 1);
+            this.onModelChange(this.value);
+            this.onModelTouched();
+            this.onRate.emit({
+                originalEvent: event,
+                value: (i+1)
+            });
+        }        
+    }
+    
+    clear(event): void {
+        if(!this.readonly&&!this.disabled) {
+            this.value = null;
+            this.onModelChange(this.value);
+            this.onModelTouched();
+            this.onCancel.emit(event);
+        }
+    }
+    
+    writeValue(value: any) : void {
+        this.value = value;
+    }
+    
+    registerOnChange(fn: Function): void {
+        this.onModelChange = fn;
+    }
 
-    ngOnDestroy() {
-        jQuery(this.el.nativeElement.children[0].children[0]).puirating('destroy');
-        this.initialized = false;
+    registerOnTouched(fn: Function): void {
+        this.onModelTouched = fn;
     }
 }
+
+@NgModule({
+    imports: [CommonModule],
+    exports: [Rating],
+    declarations: [Rating]
+})
+export class RatingModule { }

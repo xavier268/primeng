@@ -1,16 +1,16 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Togglebutton</span>
-        <span class="defaultText dispTable">ToggleButton is used to select a boolean value using a button.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Togglebutton</span>
+        <span class="defaultText">ToggleButton is used to select a boolean value using a button.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
     <h3 class="first">Basic - ({{checked1}})</h3>
-    <p-toggleButton [(checked)]="checked1" style="width:150px"></p-toggleButton>
+    <p-toggleButton [(ngModel)]="checked1" [style]="&#123;'width':'150px'&#125;"></p-toggleButton>
 
     <h3>Customized - ({{checked2}})</h3>
-    <p-toggleButton onLabel="I confirm" offLabel="I reject" onIcon="fa-check-square" offIcon="fa-square" [(checked)]="checked2" style="width:150px"></p-toggleButton>
+    <p-toggleButton [(ngModel)]="checked2" onLabel="I confirm" offLabel="I reject" onIcon="fa-check-square" offIcon="fa-square" [style]="&#123;'width':'150px'&#125;"></p-toggleButton>
 </div>
 
 <div class="ContentSideSections Source">
@@ -18,38 +18,56 @@
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
-import {ToggleButton} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;ToggleButtonModule&#125; from 'primeng/primeng';
+</code>
 </pre>
 
             <h3>Getting Started</h3>
-            <p>ToggleButton is defined using p-toggleButton element. Checked property supports two-way binding to retrieve and assign the model.</p>
+            <p>Two-way binding to a boolean property is defined using the standard ngModel directive.</p>
                     
 <pre>
-&lt;p-toggleButton [(checked)]="checked"&gt;&lt;/p-toggleButton&gt;
+<code class="language-markup" pCode>
+&lt;p-toggleButton [(ngModel)]="checked"&gt;&lt;/p-toggleButton&gt;
+</code>
 </pre>
 
 <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
 
     checked: boolean;
 
-}
+&#125;
+</code>
 </pre>
 
             <p>As model is two-way binding enabled, setting the bound value as true displays the state as checked.</p>
 <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
 
    checked: boolean = true;
 
-}
+&#125;
+</code>
+</pre>
+
+            <h3>Model Driven Forms</h3>
+            <p>ToggleButton can be used in a model driven form as well.</p>
+<pre>
+<code class="language-markup" pCode>
+&lt;p-toggleButton formControlName="agreed"&gt;&lt;/p-toggleButton&gt;
+</code>
 </pre>
 
             <h3>Customization</h3>
             <p>Icons and Labels can be customized using onLabel, offLabel, onIcon and OffIcon attributes.</p>
-            <pre>
+<pre>
+<code class="language-markup" pCode>
 &lt;p-toggleButton onLabel="I confirm" offLabel="I reject" 
-        onIcon="fa-check-square" offIcon="fa-square" [(checked)]="val"&gt;&lt;/p-toggleButton&gt;
+        onIcon="fa-check-square" offIcon="fa-square" [(ngModel)]="val"&gt;&lt;/p-toggleButton&gt;
+</code>
 </pre>
 
             <h3>Attributes</h3>
@@ -131,19 +149,23 @@ export class ModelComponent {
                 </table>
             </div>
 <pre>
-&lt;p-toggleButton (onChange)="handleChange($event)" [(checked)]="val"&gt;
+<code class="language-markup" pCode>
+&lt;p-toggleButton (onChange)="handleChange($event)" [(ngModel)]="val"&gt;
+</code>
 </pre>
  <pre>
-export class ModelComponent {
+<code class="language-typescript" pCode>
+export class ModelComponent &#123;
     
-    handleChange(e) {
+    handleChange(e) &#123;
         var isChecked = e.checked;
-    }
-}
+    &#125;
+&#125;
+</code>
 </pre>
 
             <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -170,25 +192,29 @@ export class ModelComponent {
             </div>
 
             <h3>Dependencies</h3>
-            <p>jQuery, jQuery UI WidgetFactory API, PrimeUI ToggleButton.</p>
+            <p>Native component that requires the css of PrimeUI ToggleButton.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
 <pre>
-&lt;h3 class="first"&gt;Basic - (<span>{</span><span>{</span>checked1<span>}</span><span>}</span>)&lt;/h3&gt;
-&lt;p-toggleButton [(checked)]="checked1" style="width:150px"&gt;&lt;/p-toggleButton&gt;
+<code class="language-markup" pCode ngNonBindable>
+&lt;h3 class="first"&gt;Basic - ({{checked1}})&lt;/h3&gt;
+&lt;p-toggleButton [(ngModel)]="checked1" [style]="&#123;'width':'150px'&#125;"&gt;&lt;/p-toggleButton&gt;
 
-&lt;h3&gt;Customized - (<span>{</span><span>{</span>checked2<span>}</span><span>}</span>)&lt;/h3&gt;
-&lt;p-toggleButton onLabel="I confirm" offLabel="I reject" onIcon="fa-check-square" offIcon="fa-square" [(checked)]="checked2" style="width:150px"&gt;&lt;/p-toggleButton&gt;
+&lt;h3&gt;Customized - ({{checked2}})&lt;/h3&gt;
+&lt;p-toggleButton [(ngModel)]="checked2" onLabel="I confirm" offLabel="I reject" onIcon="fa-check-square" offIcon="fa-square" [style]="&#123;'width':'150px'&#125;"&gt;&lt;/p-toggleButton&gt;
+</code>
 </pre>
 
 <pre>
-export class ToggleButtonDemo {
+<code class="language-typescript" pCode>
+export class ToggleButtonDemo &#123;
     
     checked1: boolean = false;
 
     checked2: boolean = true;
-}
+&#125;
+</code>
 </pre>
         </p-tabPanel>
     </p-tabView>

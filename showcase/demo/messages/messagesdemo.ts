@@ -1,15 +1,8 @@
-import {Component} from 'angular2/core';
-import {Messages} from '../../../components/messages/messages';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Button} from '../../../components/button/button';
-import {SelectItem} from '../../../components/api/selectitem';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
-import {Message} from '../../../components/api/message';
+import {Component} from '@angular/core';
+import {Message} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/messages/messagesdemo.html',
-    directives: [Messages,TabPanel,TabView,Button,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/messages/messagesdemo.html'
 })
 export class MessagesDemo {
 

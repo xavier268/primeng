@@ -1,185 +1,51 @@
 <datatable-demos></datatable-demos>
 
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">DataTable</span>
-        <span class="defaultText dispTable">DataTable displays data in tabular format.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">DataTable</span>
+        <span class="defaultText">Incell editing is enabled by setting editable property true both on datatable and columns, when a cell is clicked edit mode is activated, clicking outside of cell or hitting the enter key 
+        switches back to view mode after updating the value.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
-    <p-dataTable [value]="cars" [columns]="cols" editable="true"></p-dataTable>
-
+    <p-dataTable [value]="cars" [editable]="true">
+        <p-column field="vin" header="Vin" [editable]="true"></p-column>
+        <p-column field="year" header="Year" [editable]="true"></p-column>
+        <p-column field="brand" header="Brand" [editable]="true"></p-column>
+        <p-column field="color" header="Color" [editable]="true"></p-column>
+    </p-dataTable>
 </div>
 
 <div class="ContentSideSections Source">
     <p-tabView effect="fade">
-        <p-tabPanel header="Documentation">
-            <h3>Import</h3>
+        <p-tabPanel header="datatableeditabledemo.ts">
 <pre>
-import {DataTable} from 'primeng/primeng';
-</pre>
+<code class="language-typescript" pCode>
+export class DataTableEditableDemo implements OnInit &#123;
 
-            <h3>Getting Started</h3>
-            <p>Paginator is defined using p-paginator element.</p>
-<pre>
-&lt;p-paginator&gt;&lt;/p-paginator&gt;
-</pre>
-            <h3>Rows and TotalRecords</h3>
-            <p>Rows and TotalRecords define how many pages the paginator should display. Paginator below will have 10 pages.</p>
-<pre>
-&lt;p-paginator rows="10" totalRecords="100"&gt;&lt;/p-paginator&gt;
-</pre>
+    cars: Car[];
 
-            <h3>PageLinks</h3>
-            <p>PageLinks provide shortcuts to jump to a specific page, use pageLinkSize property to define the number of links to display. Default is 5.</p>
+    constructor(private carService: CarService) &#123; &#125;
 
-<pre>
-&lt;p-paginator rows="10" totalRecords="100" pageLinkSize="3"&gt;&lt;/p-paginator&gt;
-</pre>
-
-            <h3>Attributes</h3>
-            <div class="doc-tablewrapper">
-                <table class="doc-table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>totalRecords</td>
-                        <td>number</td>
-                        <td>0</td>
-                        <td>Number of total records.</td>
-                    </tr>
-                    <tr>
-                        <td>rows</td>
-                        <td>number</td>
-                        <td>0</td>
-                        <td>Data count to display per page.</td>
-                    </tr>
-                    <tr>
-                        <td>page</td>
-                        <td>number</td>
-                        <td>0</td>
-                        <td>Zero based index of the active page.</td>
-                    </tr>
-                    <tr>
-                        <td>pageLinkSize</td>
-                        <td>number</td>
-                        <td>5</td>
-                        <td>Number of page links to display.</td>
-                    </tr>
-                    <tr>
-                        <td>style</td>
-                        <td>string</td>
-                        <td>null</td>
-                        <td>Inline style of the component.</td>
-                    </tr>
-                    <tr>
-                        <td>styleClass</td>
-                        <td>string</td>
-                        <td>null</td>
-                        <td>Style class of the component.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3>Events</h3>
-            <div class="doc-tablewrapper">
-                <table class="doc-table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Parameters</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>onPageChange</td>
-                        <td>event.first: Index of first record <br >
-                            event.rows: Number of rows to display in new page <br >
-                            event.page: Index of the new page <br >
-                            event.pageCount: Total number of pages <br ></td>
-                        <td>Callback to invoke when page changes, the event object contains information about the new state.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-<pre>
-&lt;p-paginator rows="10" totalRecords="100" (onPageChange)="paginate($event)"&gt;&lt;/p-paginator&gt;
-</pre>
-
-<pre>
-export class MyComponent {
-
-    paginate(event) {
-        //event.first = Index of the first record
-        //event.rows = Number of rows to display in new page
-        //event.page = Index of the new page
-        //event.pageCount = Total number of pages
-    }
-
-}
-</pre>
-
-            <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
-            <div class="doc-tablewrapper">
-                <table class="doc-table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Element</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>ui-paginator</td>
-                        <td>Container element.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-first</td>
-                        <td>First page element.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-prev</td>
-                        <td>Previous page element.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-pages</td>
-                        <td>Container of page links.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-page</td>
-                        <td>A page link.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-next</td>
-                        <td>Next pge element.</td>
-                    </tr>
-                    <tr>
-                        <td>ui-paginator-last</td>
-                        <td>Last page element.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3>Dependencies</h3>
-            <p>Native component that requires PrimeUI paginator widget css.</p>
+    ngOnInit() &#123;
+        this.carService.getCarsSmall().then(cars => this.cars = cars);
+    &#125;
+&#125;
+</code>
+</pre>            
         </p-tabPanel>
 
-        <p-tabPanel header="Source">
+        <p-tabPanel header="datatableeditabledemo.html">
 <pre>
-&lt;p-paginator rows="10" totalRecords="100"&gt;&lt;/p-paginator&gt;
+<code class="language-markup" pCode>
+&lt;p-dataTable [value]="cars" [editable]="true"&gt;
+    &lt;p-column field="vin" header="Vin" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="year" header="Year" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="brand" header="Brand" [editable]="true"&gt;&lt;/p-column&gt;
+    &lt;p-column field="color" header="Color" [editable]="true"&gt;&lt;/p-column&gt;
+&lt;/p-dataTable&gt;
+</code>
 </pre>
         </p-tabPanel>
     </p-tabView>

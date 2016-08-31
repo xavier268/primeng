@@ -1,14 +1,8 @@
-import {Component} from 'angular2/core';
-import {SelectButton} from '../../../components/selectbutton/selectbutton';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {Button} from '../../../components/button/button';
-import {SelectItem} from '../../../components/api/selectitem';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {SelectItem} from '../../../components/common/api';
 
 @Component({
-    templateUrl: 'showcase/demo/selectbutton/selectbuttondemo.html',
-    directives: [SelectButton, TabPanel, TabView, Button, ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/selectbutton/selectbuttondemo.html'
 })
 export class SelectButtonDemo {
 

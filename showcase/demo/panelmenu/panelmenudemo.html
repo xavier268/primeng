@@ -1,74 +1,12 @@
 <div class="ContentSideSections">
-    <div class="Content100 overHidden TextShadow">
-        <span class="fontSize30 TextShadow orange mediumFont marginBottom20 dispBlock">Menu - PanelMenu</span>
-        <span class="defaultText dispTable">PanelMenu is a hybrid of accordion-tree components.</span>
+    <div>
+        <span class="fontSize30 TextShadow orange marginBottom20 dispBlock">Menu - PanelMenu</span>
+        <span class="defaultText">PanelMenu is a hybrid of accordion-tree components.</span>
     </div>
 </div>
 
 <div class="ContentSideSections Implementation">
-    <p-panelMenu style="width:300px">
-        <div>
-            <div><a data-icon="fa-file-o"><span>File</span></a></div>
-            <div>
-                <ul>
-                    <li><a data-icon="fa-plus"><span>New</span></a>
-                        <ul>
-                            <li><a><span>Project</span></a></li>
-                            <li><a><span>Other</span></a></li>
-                        </ul>
-                    </li>
-                    <li><a><span>Open</span></a></li>
-                    <li><a><span>Quit</span></a></li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <div><a data-icon="fa-edit"><span>Edit</span></a></div>
-            <div>
-                <ul>
-                    <li><a data-icon="fa-mail-forward"><span>Undo</span></a></li>
-                    <li><a data-icon="fa-mail-reply"><span>Redo</span></a></li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <div><a data-icon="fa-question"><span>Help</span></a></div>
-            <div>
-                <ul>
-                    <li><a><span>Contents</span></a></li>
-                    <li><a data-icon="fa-search"><span>Search</span></a>
-                        <ul>
-                            <li><a><span>Text</span></a>
-                                <ul>
-                                    <li><a><span>Workspace</span></a></li>
-                                </ul>
-                            </li>
-                            <li><a><span>File</span></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <div><a data-icon="fa-gear"><span>Actions</span></a></div>
-            <div>
-                <ul>
-                    <li><a data-icon="fa-pencil"><span>Edit</span></a>
-                        <ul>
-                            <li><a data-icon="fa-save"><span>Save</span></a></li>
-                            <li><a data-icon="fa-save"><span>Update</span></a></li>
-                        </ul>
-                    </li>
-                    <li><a data-icon="fa-phone"><span>Other</span></a>
-                        <ul>
-                            <li><a data-icon="fa-minus"><span>Delete</span></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </p-panelMenu>
-
+    <p-panelMenu [model]="items" [style]="&#123;'width':'300px'&#125;"></p-panelMenu>
 </div>
 
 
@@ -77,38 +15,107 @@
         <p-tabPanel header="Documentation">
             <h3>Import</h3>
 <pre>
-import {PanelMenu} from 'primeng/primeng';
+<code class="language-typescript" pCode>
+import &#123;PanelMenuModule,MenuItem&#125; from 'primeng/primeng';
+</code>
 </pre>
+
+            <h3>MenuModel API</h3>
+            <p>PanelMenu uses the common menumodel api to define its items, visit <a [routerLink]="['/menumodel']">MenuModel API</a> for details.</p>
 
             <h3>Getting Started</h3>
-            <p>An accordion submenu is defined using a pair of divs that represent header and content. In content div, a nested list element
-            specifies the tree items.</p>
+            <p>PanelMenu requires nested menuitems as its model.</p>
 <pre>
-&lt;p-panelMenu style="width:300px"&gt;
-    &lt;div&gt;
-        &lt;div&gt;&lt;a data-icon="fa-file-o"&gt;&lt;span&gt;File&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-        &lt;div&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a data-icon="fa-plus"&gt;&lt;span&gt;New&lt;/span&gt;&lt;/a&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;Project&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;Other&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/li&gt;
-                &lt;li&gt;&lt;a&gt;&lt;span&gt;Open&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a&gt;&lt;span&gt;Quit&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;p-panelMenu&gt;
-</pre>
-            
-            <h3>Icons</h3>
-            <p>An icon of a menuitem is defined using data-icon attribute.</p>
-<pre>
-&lt;a data-icon="fa-plus"&gt;&lt;span&gt;New&lt;/span&gt;&lt;/a&gt;
+<code class="language-markup" pCode>
+&lt;p-panelMenu [model]="items" [style]="&#123;'width':'300px'&#125;"&gt;&lt;/p-panelMenu&gt;
+</code>
 </pre>
 
+<pre>
+<code class="language-typescript" pCode>
+export class PanelMenuDemo &#123;
+  
+    private items: MenuItem[];
+
+    ngOnInit() &#123;
+        this.items = [
+            &#123;
+                label: 'File',
+                icon: 'fa-file-o',
+                items: [&#123;
+                        label: 'New', 
+                        icon: 'fa-plus',
+                        items: [
+                            &#123;label: 'Project'&#125;,
+                            &#123;label: 'Other'&#125;,
+                        ]
+                    &#125;,
+                    &#123;label: 'Open'&#125;,
+                    &#123;label: 'Quit'&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Edit',
+                icon: 'fa-edit',
+                items: [
+                    &#123;label: 'Undo', icon: 'fa-mail-forward'&#125;,
+                    &#123;label: 'Redo', icon: 'fa-mail-reply'&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Help',
+                icon: 'fa-question',
+                items: [
+                    &#123;
+                        label: 'Contents'
+                    &#125;,
+                    &#123;
+                        label: 'Search', 
+                        icon: 'fa-search', 
+                        items: [
+                            &#123;
+                                label: 'Text', 
+                                items: [
+                                    &#123;
+                                        label: 'Workspace'
+                                    &#125;
+                                ]
+                            &#125;,
+                            &#123;
+                                label: 'File'
+                            &#125;
+                    ]&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Actions',
+                icon: 'fa-gear',
+                items: [
+                    &#123;
+                        label: 'Edit',
+                        icon: 'fa-refresh',
+                        items: [
+                            &#123;label: 'Save', icon: 'fa-save'&#125;,
+                            &#123;label: 'Update', icon: 'fa-save'&#125;,
+                        ]
+                    &#125;,
+                    &#123;
+                        label: 'Other',
+                        icon: 'fa-phone',
+                        items: [
+                            &#123;label: 'Delete', icon: 'fa-minus'&#125;
+                        ]
+                    &#125;
+                ]
+            &#125;
+        ];
+    &#125;
+&#125;
+</code>
+</pre>
+
+            <h3>Initial State</h3>
+            <p>MenuItem has an expanded property to control the visibility of a submenu, you may use this property to control the state from the menumodel.</p>
 
             <h3>Attributes</h3>
             <div class="doc-tablewrapper">
@@ -122,6 +129,12 @@ import {PanelMenu} from 'primeng/primeng';
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>model</td>
+                            <td>array</td>
+                            <td>null</td>
+                            <td>An array of menuitems.</td>
+                        </tr>
                         <tr>
                             <td>style</td>
                             <td>string</td>
@@ -139,7 +152,7 @@ import {PanelMenu} from 'primeng/primeng';
             </div>
 
             <h3>Styling</h3>
-            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['Theming']">theming page</a>.</p>
+            <p>Following is the list of structural style classes, for theming classes visit <a href="#" [routerLink]="['/theming']">theming page</a>.</p>
             <div class="doc-tablewrapper">
                 <table class="doc-table">
                     <thead>
@@ -186,73 +199,97 @@ import {PanelMenu} from 'primeng/primeng';
             </div>
 
             <h3>Dependencies</h3>
-            <p>PrimeUI PanelMenu.</p>
+            <p>Native component that requires the css of PrimeUI PanelMenu.</p>
         </p-tabPanel>
 
         <p-tabPanel header="Source">
 <pre>
-&lt;p-panelMenu style="width:300px"&gt;
-    &lt;div&gt;
-        &lt;div&gt;&lt;a data-icon="fa-file-o"&gt;&lt;span&gt;File&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-        &lt;div&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a data-icon="fa-plus"&gt;&lt;span&gt;New&lt;/span&gt;&lt;/a&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;Project&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;Other&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/li&gt;
-                &lt;li&gt;&lt;a&gt;&lt;span&gt;Open&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a&gt;&lt;span&gt;Quit&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div&gt;
-        &lt;div&gt;&lt;a data-icon="fa-edit"&gt;&lt;span&gt;Edit&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-        &lt;div&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a data-icon="fa-mail-forward"&gt;&lt;span&gt;Undo&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a data-icon="fa-mail-reply"&gt;&lt;span&gt;Redo&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div&gt;
-        &lt;div&gt;&lt;a data-icon="fa-question"&gt;&lt;span&gt;Help&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-        &lt;div&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a&gt;&lt;span&gt;Contents&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a data-icon="fa-search"&gt;&lt;span&gt;Search&lt;/span&gt;&lt;/a&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;Text&lt;/span&gt;&lt;/a&gt;
-                            &lt;ul&gt;
-                                &lt;li&gt;&lt;a&gt;&lt;span&gt;Workspace&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                            &lt;/ul&gt;
-                        &lt;/li&gt;
-                        &lt;li&gt;&lt;a&gt;&lt;span&gt;File&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div&gt;
-        &lt;div&gt;&lt;a data-icon="fa-gear"&gt;&lt;span&gt;Actions&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-        &lt;div&gt;
-            &lt;ul&gt;
-                &lt;li&gt;&lt;a data-icon="fa-pencil"&gt;&lt;span&gt;Edit&lt;/span&gt;&lt;/a&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a data-icon="fa-save"&gt;&lt;span&gt;Save&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                        &lt;li&gt;&lt;a data-icon="fa-save"&gt;&lt;span&gt;Update&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/li&gt;
-                &lt;li&gt;&lt;a data-icon="fa-phone"&gt;&lt;span&gt;Other&lt;/span&gt;&lt;/a&gt;
-                    &lt;ul&gt;
-                        &lt;li&gt;&lt;a data-icon="fa-minus"&gt;&lt;span&gt;Delete&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-                    &lt;/ul&gt;
-                &lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/p-panelMenu&gt;
+<code class="language-markup" pCode>
+&lt;p-panelMenu [model]="items" [style]="&#123;'width':'300px'&#125;"&gt;&lt;/p-panelMenu&gt;
+</code>
+</pre>
+
+<pre>
+<code class="language-typescript" pCode>
+export class PanelMenuDemo &#123;
+  
+    private items: MenuItem[];
+
+    ngOnInit() &#123;
+        this.items = [
+            &#123;
+                label: 'File',
+                icon: 'fa-file-o',
+                items: [&#123;
+                        label: 'New', 
+                        icon: 'fa-plus',
+                        items: [
+                            &#123;label: 'Project'&#125;,
+                            &#123;label: 'Other'&#125;,
+                        ]
+                    &#125;,
+                    &#123;label: 'Open'&#125;,
+                    &#123;label: 'Quit'&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Edit',
+                icon: 'fa-edit',
+                items: [
+                    &#123;label: 'Undo', icon: 'fa-mail-forward'&#125;,
+                    &#123;label: 'Redo', icon: 'fa-mail-reply'&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Help',
+                icon: 'fa-question',
+                items: [
+                    &#123;
+                        label: 'Contents'
+                    &#125;,
+                    &#123;
+                        label: 'Search', 
+                        icon: 'fa-search', 
+                        items: [
+                            &#123;
+                                label: 'Text', 
+                                items: [
+                                    &#123;
+                                        label: 'Workspace'
+                                    &#125;
+                                ]
+                            &#125;,
+                            &#123;
+                                label: 'File'
+                            &#125;
+                    ]&#125;
+                ]
+            &#125;,
+            &#123;
+                label: 'Actions',
+                icon: 'fa-gear',
+                items: [
+                    &#123;
+                        label: 'Edit',
+                        icon: 'fa-refresh',
+                        items: [
+                            &#123;label: 'Save', icon: 'fa-save'&#125;,
+                            &#123;label: 'Update', icon: 'fa-save'&#125;,
+                        ]
+                    &#125;,
+                    &#123;
+                        label: 'Other',
+                        icon: 'fa-phone',
+                        items: [
+                            &#123;label: 'Delete', icon: 'fa-minus'&#125;
+                        ]
+                    &#125;
+                ]
+            &#125;
+        ];
+    &#125;
+&#125;
+</code>
 </pre>
         </p-tabPanel>
     </p-tabView>

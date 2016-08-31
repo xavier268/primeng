@@ -1,27 +1,15 @@
-import {Component,OnInit} from 'angular2/core';
-import {DataTable} from '../../../components/datatable/datatable';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
-import {Car} from '../domain/car';
-import {Column} from '../../../components/api/column';
-import {DataTableSubmenu} from './datatablesubmenu.component';
-import {CarService} from '../service/carservice';
+import {Component,OnInit} from '@angular/core';
 
 @Component({
-    templateUrl: 'showcase/demo/datatable/datatablegroupdemo.html',
-    directives: [DataTable,DataTableSubmenu,TabPanel,TabView,ROUTER_DIRECTIVES],
-    providers: [CarService]
+    templateUrl: 'showcase/demo/datatable/datatablegroupdemo.html'
 })
 export class DataTableGroupDemo implements OnInit {
 
     sales: any[];
 
-    cols: Column[];
-
-    headerCols: any[];
-
-    constructor(private carService: CarService) { }
+    headerRows: any[];
+    
+    footerRows: any[];
 
     ngOnInit() {
         this.sales = [
@@ -36,34 +24,36 @@ export class DataTableGroupDemo implements OnInit {
             {brand: 'HTC', lastYearSale: '90%', thisYearSale: '56%', lastYearProfit: '$765,442', thisYearProfit: '$296,232'},
             {brand: 'Toshiba', lastYearSale: '75%', thisYearSale: '54%', lastYearProfit: '$21,212', thisYearProfit: '$12,533'}
         ];
-
-        this.cols = [
-            {field: 'brand'},
-            {field: 'lastYearSale'},
-            {field: 'thisYearSale'},
-            {field: 'lastYearProfit'},
-            {field: 'thisYearProfit'}
+        
+        this.headerRows = [
+            {
+                columns: [
+                    {header: 'Brand', rowspan: 3},
+                    {header: 'Sale Rate', colspan: 4}
+                ]
+            },
+            {
+                columns: [
+                    {header: 'Brand', colspan: 2},
+                    {header: 'Sale Rate', colspan: 2}
+                ]
+            },
+            {
+                columns: [
+                    {header: 'Last Year'},
+                    {header: 'This Year'},
+                    {header: 'Last Year'},
+                    {header: 'This Year'}
+                ]
+            }
         ];
-
-        this.headerCols = [
+        
+        this.footerRows = [
             {
                 columns: [
-                    {headerText: 'Brand', rowspan: 3},
-                    {headerText: 'Sale Rate', colspan: 4}
-                ]
-            },
-            {
-                columns: [
-                    {headerText: 'Brand', colspan: 2},
-                    {headerText: 'Sale Rate', colspan: 2}
-                ]
-            },
-            {
-                columns: [
-                    {headerText: 'Last Year'},
-                    {headerText: 'This Year'},
-                    {headerText: 'Last Year'},
-                    {headerText: 'This Year'}
+                    {footer: 'Totals:', colspan: 3},
+                    {footer: '$506,202'},
+                    {footer: '$531,020'}
                 ]
             }
         ];

@@ -1,96 +1,168 @@
-import {Component,ElementRef,AfterViewInit,OnDestroy,OnChanges,Input,Output,SimpleChange,EventEmitter} from 'angular2/core';
-import {SelectItem} from '../api/selectitem';
+import {NgModule,Component,ElementRef,Input,Output,EventEmitter,ContentChild,TemplateRef,IterableDiffers,forwardRef,Provider} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SelectItem} from '../common/api';
+import {SharedModule} from '../common/shared';
+import {DomHandler} from '../dom/domhandler';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
+
+const LISTBOX_VALUE_ACCESSOR: Provider = new Provider(NG_VALUE_ACCESSOR, {
+    useExisting: forwardRef(() => Listbox),
+    multi: true
+});
 
 @Component({
     selector: 'p-listbox',
     template: `
-        <div class="ui-listbox ui-inputtext ui-widget ui-widget-content ui-corner-all">
-            <div class="ui-helper-hidden-accessible">
-                <select>
-                    <option *ngFor="#option of options;" [value]="option.value">{{option.label}}</option>
-                </select>
-            </div>
-            <ul class="ui-listbox-list" *ngIf="!customContent">
-                <li *ngFor="#option of options" class="ui-listbox-item ui-corner-all">
-                    {{option.label}}
+        <div [ngClass]="{'ui-listbox ui-inputtext ui-widget ui-widget-content ui-corner-all':true,'ui-state-disabled':disabled}" [ngStyle]="style" [class]="styleClass">
+            <ul class="ui-listbox-list">
+                <li #item *ngFor="let option of options"
+                    [ngClass]="{'ui-listbox-item ui-corner-all':true,'ui-state-hover':(hoveredItem==item),'ui-state-highlight':isSelected(option)}"
+                    (mouseenter)="hoveredItem=item" (mouseleave)="hoveredItem=null" (click)="onOptionClick($event,option)">
+                    <span *ngIf="!itemTemplate">{{option.label}}</span>
+                    <template *ngIf="itemTemplate" [pTemplateWrapper]="itemTemplate" [item]="option"></template>
                 </li>
-
             </ul>
-            <ng-content *ngIf="customContent"></ng-content>
         </div>
-    `
+    `,
+    providers: [DomHandler,LISTBOX_VALUE_ACCESSOR]
 })
-export class Listbox {
-
-    initialized: boolean;
+export class Listbox implements ControlValueAccessor {
 
     @Input() options: SelectItem[];
 
-    @Input() value: any;
-
     @Input() multiple: boolean;
 
-    @Input() scrollHeight: number;
-
-    @Input() customContent: boolean;
-
-    @Input() style: string;
+    @Input() style: any;
 
     @Input() styleClass: string;
-
-    @Output() valueChange: EventEmitter<any> = new EventEmitter();
+    
+    @Input() disabled: string;
 
     @Output() onChange: EventEmitter<any> = new EventEmitter();
-
-    stopNgOnChangesPropagation: boolean;
-
-    constructor(private el: ElementRef) {
-        this.initialized = false;
+    
+    @ContentChild(TemplateRef) itemTemplate: TemplateRef<any>;
+    
+    value: any;
+    
+    onModelChange: Function = () => {};
+    
+    onModelTouched: Function = () => {};
+        
+    valueChanged: boolean;
+    
+    hoveredItem: any;
+        
+    constructor(protected el: ElementRef, protected domHandler: DomHandler) {}
+    
+    writeValue(value: any) : void {
+        this.value = value;
+    }
+    
+    registerOnChange(fn: Function): void {
+        this.onModelChange = fn;
     }
 
-    ngAfterViewInit() {
-        jQuery(this.el.nativeElement.children[0].children[0].children[0]).puilistbox({
-            value: this.value,
-            scrollHeight: this.scrollHeight,
-            multiple: this.multiple,
-            enhanced: true,
-            style: this.style,
-            styleClass: this.styleClass,
-            change: (event: Event, ui: PrimeUI.ListboxEventParams) => {
-                this.stopNgOnChangesPropagation = true;
-                this.onChange.next({originalEvent: event, value: ui.value});
-                if(this.multiple) {
-                    var values:any = [];
-                    for(var i = 0; i < ui.index.length;i++) {
-                        values.push(this.options[ui.index[i]].value);
-                    }
-
-                    this.valueChange.next(values);
-                }
-                else {
-                    this.valueChange.next(this.options[ui.index].value);
-                }
-            }
-        });
-        this.initialized = true;
+    registerOnTouched(fn: Function): void {
+        this.onModelTouched = fn;
     }
-
-    ngOnChanges(changes: { [key: string]: SimpleChange}) {
-        if (this.initialized) {
-            for (var key in changes) {
-                if (key == 'value' && this.stopNgOnChangesPropagation) {
-                    this.stopNgOnChangesPropagation = false;
-                    continue;
-                }
-
-                jQuery(this.el.nativeElement.children[0].children[0].children[0]).puilistbox('option', key, changes[key].currentValue);
+                
+    onOptionClick(event, option) {
+        let metaKey = (event.metaKey||event.ctrlKey);
+        let selected = this.isSelected(option);
+        
+        if(this.multiple)
+            this.onOptionClickMultiple(event,option);
+        else
+            this.onOptionClickSingle(event,option);
+    }
+    
+    onOptionClickSingle(event, option) {
+        let metaKey = (event.metaKey||event.ctrlKey);
+        let selected = this.isSelected(option);
+        let valueChanged = false;
+        
+        if(selected) {
+            if(metaKey) {
+                this.value = null;
+                valueChanged = true;
             }
         }
+        else {
+            this.value = option.value;
+            valueChanged = true;
+        }
+        
+        if(valueChanged) {
+            this.onModelChange(this.value);
+            this.onChange.emit(event);
+        }
     }
-
-    ngOnDestroy() {
-        jQuery(this.el.nativeElement.children[0].children[0].children[0]).puilistbox('destroy');
-        this.initialized = false;
+    
+    onOptionClickMultiple(event, option) {
+        let metaKey = (event.metaKey||event.ctrlKey);
+        let selected = this.isSelected(option);
+        let valueChanged = false;
+        
+        if(selected) {
+            if(metaKey) {
+                this.value.splice(this.findIndex(option), 1);
+            }
+            else {
+                this.value = [];
+                this.value.push(option.value);
+            }
+            valueChanged = true;
+        }
+        else {
+            this.value = (metaKey) ? this.value||[] : [];            
+            this.value.push(option.value);
+            valueChanged = true;
+        }
+        
+        if(valueChanged) {
+            this.onModelChange(this.value);
+            this.onChange.emit(event);
+        }
     }
-
+    
+    isSelected(option: SelectItem) {
+        let selected = false;
+        
+        if(this.multiple) {
+            if(this.value) {
+                for(let i = 0; i < this.value.length; i++) {
+                    if(this.value[i] === option.value) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            selected =  this.value == option.value;
+        }
+        
+        return selected;
+    }
+    
+    findIndex(option: SelectItem): number {        
+        let index: number = -1;
+        if(this.value) {
+            for(let i = 0; i < this.value.length; i++) {
+                if(this.domHandler.equals(option.value, this.value[i])) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+                
+        return index;
+    }
 }
+
+@NgModule({
+    imports: [CommonModule,SharedModule],
+    exports: [Listbox,SharedModule],
+    declarations: [Listbox]
+})
+export class ListboxModule { }

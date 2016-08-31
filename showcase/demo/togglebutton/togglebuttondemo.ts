@@ -1,12 +1,7 @@
-import {Component} from 'angular2/core';
-import {ToggleButton} from '../../../components/togglebutton/togglebutton';
-import {TabView} from '../../../components/tabview/tabview';
-import {TabPanel} from '../../../components/tabview/tabpanel';
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
 
 @Component({
-    templateUrl: 'showcase/demo/togglebutton/togglebuttondemo.html',
-    directives: [ToggleButton,TabView,TabPanel,ROUTER_DIRECTIVES]
+    templateUrl: 'showcase/demo/togglebutton/togglebuttondemo.html'
 })
 export class ToggleButtonDemo {
     

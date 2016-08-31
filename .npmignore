@@ -1,11 +1,31 @@
-*.log
+# dependencies
+node_modules
+
+# demo
+showcase
+index.html
+upload.php
+
+# typescript
 *.ts
 !*.d.ts
+
+# git
 .git
 .gitignore
-node_modules
-showcase
+
+# type definition
 typings
-index.html
-tsconfig.json
 typings.json
+
+# config
+tsconfig.json
+webpack.config.js
+gulpfile.js
+
+# misc
+*.log
+prod
+
+
+
